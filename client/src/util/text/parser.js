@@ -98,10 +98,4 @@ function tokenize(markdown) {
 };
 
 
-
-const markdown = `
-# Hello **__test__ hello**
-> Hello
-`;
-
-console.log(tokenize(markdown));
+export default tokenize;
