@@ -33,22 +33,47 @@ function tokenize(markdown) {
         if (!content) return [];
         const output = [];
         let lastIdx = 0;
-        for (const syntax of inlineSyntaxes) {
-            const match = content.slice(lastIdx).matchAll(syntax.regex);
-            const matches = [...match];
-            if (matches.length){
-                content.slice(lastIdx, matches[0].index) && output.push({key:'text',content:content.slice(lastIdx, matches[0].index)});
-                matches.forEach((m) => {
-                    const l =  (syntax.regex).source.replaceAll('\\', '').replaceAll('(.*?)','').length;
-                    output.push({key:syntax.type,content:syntax.render ? tokenInline(m[1]) : {key:'text',content:m[1]}});
-                    lastIdx = l+m.index+m[1].length + 1;
-                })
+      
+        while (lastIdx < content.length) {
+          let earliestMatch = null;
+          let earliestSyntax = null;
+      
+          for (const syntax of inlineSyntaxes) {
+            syntax.regex.lastIndex = lastIdx;
+            const match = syntax.regex.exec(content);
+            if (match && (!earliestMatch || match.index < earliestMatch.index)) {
+              earliestMatch = match;
+              earliestSyntax = syntax;
             }
+          }
+      
+          if (earliestMatch) {
+            if (earliestMatch.index > lastIdx) {
+              output.push({ type: 'text', content: content.slice(lastIdx, earliestMatch.index) });
+            }
+      
+            if (earliestSyntax.type === 'link' || earliestSyntax.type === 'image') {
+              output.push({
+                type: earliestSyntax.type,
+                content: earliestMatch[1],
+                url: earliestMatch[2]
+              });
+            } else {
+              output.push({
+                type: earliestSyntax.type,
+                content: earliestSyntax.render ? tokenInline(earliestMatch[1]) : earliestMatch[1]
+              });
+            }
+      
+            lastIdx = earliestMatch.index + earliestMatch[0].length;
+          } else {
+            output.push({ type: 'text', content: content.slice(lastIdx) });
+            break;
+          }
         }
-        content.slice(lastIdx) && output.push({key:'text',content:content.slice(lastIdx)});
+      
         return output;
-    }
-    
+      }
 
     function getBlock(line, checkBlock = true) {
         const trimmedLine = line.trim();
