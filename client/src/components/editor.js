@@ -8,7 +8,7 @@ const Editor = () => {
   const [leftContent, setLeftContent] = useState('');
 
   return (
-    <Split className="split-container" sizes={[33, 33, 33]} minSize={100}>
+    <Split className="split-container" sizes={[32, 32, 33]} minSize={100}>
       <div className="editor-panel">
         <textarea
           value={leftContent}

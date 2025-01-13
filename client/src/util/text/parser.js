@@ -41,7 +41,7 @@ function tokenize(markdown) {
                 matches.forEach((m) => {
                     const l =  (syntax.regex).source.replaceAll('\\', '').replaceAll('(.*?)','').length;
                     output.push({key:syntax.type,content:syntax.render ? tokenInline(m[1]) : {key:'text',content:m[1]}});
-                    lastIdx = l+m.index+m[1].length;
+                    lastIdx = l+m.index+m[1].length + 1;
                 })
             }
         }
@@ -88,7 +88,7 @@ function tokenize(markdown) {
                 const key = getBlock(line, false) || 'paragraph';
                 output.push({
                     type: key,
-                    content: tokenInline(line.split(' ').slice(1).join(' ')),
+                    content: tokenInline(key!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
                 })
             }
         }
