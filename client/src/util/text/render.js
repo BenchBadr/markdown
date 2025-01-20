@@ -1,32 +1,59 @@
 import React from "react";
-import ReactDOMServer from "react-dom/server";
+import Math from "./components/math";
 
 const TokenToHtml = (tokens) => {
-  const queue = Array.isArray(tokens) ? tokens : Object.values(tokens);
+  const queue = Object.keys(tokens);
   let elements = [];
   let temp;
-  while (Object.keys(queue).length > 0){
-      const current = queue.shift();
+  let i = 0;
+  for (const [key, value] of Object.entries(tokens.tokens)){
+      const current = value
+      i++
+      queue.shift()
+      const child = current.content ? <TokenToHtml tokens={current.content}/> : null
       switch(current.type){
         // block - inline
         case 'h1':
-          temp = <h1>{current.content ? current.content.map((child) => (<TokenToHtml tokens={child}/>)) : null}</h1>;
+          temp = <h1>{child}</h1>;
           console.log(temp)
           break;
 
-        // inline - inline
+        // inline - wrapper
+        case 'paragraph':
+          temp = <p>{child}</p>;
+          break
+
+        // inline - style
+        case 'bold':
+          temp = <b>{child}</b>;
+          break;
+        case 'underline':
+          temp = <u>{child}</u>;
+          break;
+        case 'italic':
+          temp = <i>{child}</i>;
+          break;
+        // inline - no heritance
+        case 'code':
+          temp = <code>{current.content}</code>;
+          break;
+        case 'inlineMath':
+          temp = <Math formula={current.content} block={false} />;
+          break;
+        // inline - default
         case 'text':
           temp = <a>{current.content}</a>;
           break;
-        case 'paragraph':
-          temp = <p>{current.content ? current.content.map((child) => (<TokenToHtml tokens={child}/>)) : null}</p>;
-          break;
+        // default case
+        default:
+          temp = <a style={{color:'red'}}>{child}</a>
+          break
       }
-      console.log(temp)
+      console.log('temp2',temp)
       elements.push(temp);
   }
   // console.log('elements',elements)
-  return <div>{elements && elements.map((element, index) => <React.Fragment key={index}>{element}</React.Fragment>)}</div>;
+  return <>{elements && elements.map((element, index) => <React.Fragment key={index}>{element}</React.Fragment>)}</>;
 
 }
 
