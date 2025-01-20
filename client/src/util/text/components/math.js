@@ -3,9 +3,13 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
 const sharedMacros = {
+    // sets
     "\\C": "\\mathbb{C}",
-    "\\lim": "\\underset{#1}{\\lim}",
-    "\\green": "\\textcolor{green}{#1}",
+    "\\Q": "\\mathbb{Q}",
+    "\\D": "\\mathbb{D}",
+
+    // notations
+    "\\lim": "\\underset{#1}{\\text{lim}}",
 };
 
 const Math = ({ formula, block = false }) => {

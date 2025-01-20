@@ -1,5 +1,6 @@
 import React from "react";
 import Math from "./components/math";
+import './markdown.css';
 
 const TokenToHtml = (tokens) => {
   const queue = Object.keys(tokens);
@@ -14,13 +15,21 @@ const TokenToHtml = (tokens) => {
       switch(current.type){
         // block - block
         case 'blockMath':
-          temp = <Math formula={(current.content.length !== 0 ? current.content : '').replaceAll('\n','')} block={true} /> ;
+          temp = <Math formula={(current.content.length !== 0 ? current.content : '').replaceAll('\n',' ')} block={true} /> ;
+          break;
+
+        case 'blockCode':
+          temp = <pre><code>{current.content}</code></pre>;
           break;
 
         // block - inline
         case 'h1':
           temp = <h1>{child}</h1>;
           console.log(temp)
+          break;
+
+        case 'blockquote':
+          temp = <blockquote>{child}</blockquote>;
           break;
 
         // inline - wrapper
@@ -41,6 +50,9 @@ const TokenToHtml = (tokens) => {
         // inline - no heritance
         case 'code':
           temp = <code>{current.content}</code>;
+          break;
+        case 'link':
+          temp = <a href={current.url} target={`_blank`}>{current.content}</a>;
           break;
         case 'inlineMath':
           temp = <Math formula={current.content} block={false} />;
