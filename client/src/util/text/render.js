@@ -12,6 +12,11 @@ const TokenToHtml = (tokens) => {
       queue.shift()
       const child = current.content ? <TokenToHtml tokens={current.content}/> : null
       switch(current.type){
+        // block - block
+        case 'blockMath':
+          temp = <Math formula={(current.content.length !== 0 ? current.content : '').replaceAll('\n','')} block={true} /> ;
+          break;
+
         // block - inline
         case 'h1':
           temp = <h1>{child}</h1>;
