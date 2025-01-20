@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Split from 'react-split';
 import tokenize from '../util/text/parser';
-import tokenToHtml from '../util/text/render';
+import TokenToHtml from '../util/text/render';
 import './Editor.css';
 
 const Editor = () => {
@@ -23,7 +23,7 @@ const Editor = () => {
       </div>
       <div className='editor-panel'>
         <div className='non-editable-content'>
-            {tokenToHtml(tokenize(leftContent))}
+            <TokenToHtml tokens={tokenize(leftContent)}/>
         </div>
       </div>
     </Split>
