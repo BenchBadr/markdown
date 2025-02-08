@@ -1,5 +1,6 @@
 function tokenize(markdown) {
     let inBlock = false;
+    let bulletLevel = null;
     const output = [];
 
     const inlineSyntaxes = [
@@ -14,21 +15,22 @@ function tokenize(markdown) {
     ]
 
 
-    const blockSyntaxes = {
-        blockCode: /^```/g,
-        blockMath: /^\$\$/g
-    }
+    const lineSyntax = [
+      { type: 'h1', regex: /^#\s(.*)/, render: true },
+      { type: 'h2', regex: /^##\s(.*)/, render: true },
+      { type: 'h3', regex: /^###\s(.*)/, render: true },
+      { type: 'h4', regex: /^####\s(.*)/, render: true },
+      { type: 'h5', regex: /^#####\s(.*)/, render: true },
+      { type: 'h6', regex: /^######\s(.*)/, render: true },
+      { type: 'blockquote', regex: /^>(.*)/, render: true }
+  ];
+  
+  const blockSyntaxes = [
+      { type: 'blockCode', regex: /^```/g, render: false, end:'\`\`\`' },
+      { type: 'blockMath', regex: /^\\$\\$/g, render: false, end:'$$' },
+  ];
 
-    const lineSyntax = {
-        h1: /^#\s(.*)/,
-        h2: /^##\s(.*)/,
-        h3: /^###\s(.*)/,
-        h4: /^####\s(.*)/,
-        h5: /^#####\s(.*)/,
-        h6: /^######\s(.*)/,
-        blockquote: /^>(.*)/
-    };
-
+  
     function tokenInline(content) {
         if (!content) return [];
         const output = [];
@@ -78,11 +80,11 @@ function tokenize(markdown) {
     function getBlock(line, checkBlock = true) {
         const trimmedLine = line.trim();
         const syntaxes = checkBlock ? blockSyntaxes : lineSyntax;
-        for (const [key, regex] of Object.entries(syntaxes)) {
-            if (regex.test(trimmedLine)) {
+        syntaxes.forEach((syntax, key) => {
+            if (syntax.regex.test(trimmedLine)) {
                 return key;
             }
-        }
+        })
         return null;
     }
 
@@ -91,9 +93,10 @@ function tokenize(markdown) {
         if (line){
             const key = getBlock(line)
             if (key){
+                console.log(key)
                 if (!inBlock){
                     const adapter = {blockCode:'language', blockMath:'global'};
-                    const extension = line.trim().slice(blockSyntaxes[key].source.replace(/\\/g, '').length - 1);
+                    const extension = line.trim().slice(blockSyntaxes[key].end.length - 1);
                     output.push({
                         type: key,
                         content: [],

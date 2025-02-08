@@ -1,6 +1,7 @@
 import React from "react";
 import Math from "./components/math";
 import './markdown.css';
+import CustomImage from "./components/image";
 
 const TokenToHtml = (tokens) => {
   const queue = Object.keys(tokens);
@@ -21,13 +22,42 @@ const TokenToHtml = (tokens) => {
         case 'blockCode':
           temp = <pre><code>{current.content}</code></pre>;
           break;
+        case 'list':
+          temp = <li>{child}</li>
+          break;
+
 
         // block - inline
         case 'h1':
           temp = <h1>{child}</h1>;
           console.log(temp)
           break;
+        case 'h2':
+          temp = <h2>{child}</h2>;
+          console.log(temp)
+          break;
 
+        case 'h3':
+          temp = <h3>{child}</h3>;
+          console.log(temp)
+          break;
+  
+        case 'h4':
+          temp = <h4>{child}</h4>;
+          console.log(temp)
+          break;
+    
+        case 'h5':
+          temp = <h5>{child}</h5>;
+          console.log(temp)
+          break;
+
+        case 'h6':
+          temp = <h6>{child}</h6>;
+          console.log(temp)
+          break;
+      
+    
         case 'blockquote':
           temp = <blockquote>{child}</blockquote>;
           break;
@@ -54,6 +84,10 @@ const TokenToHtml = (tokens) => {
         case 'link':
           temp = <a href={current.url} target={`_blank`}>{current.content}</a>;
           break;
+
+        case 'image':
+          temp = <CustomImage src={current.url} alt={current.content} title={current.content} />;
+          break;
         case 'inlineMath':
           temp = <Math formula={current.content} block={false} />;
           break;
@@ -66,7 +100,7 @@ const TokenToHtml = (tokens) => {
           temp = <a style={{color:'red'}}>{child}</a>
           break
       }
-      console.log('temp2',temp)
+
       elements.push(temp);
   }
   // console.log('elements',elements)

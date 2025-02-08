@@ -22,4 +22,39 @@ a[href^="mailto"]::after, .link::after {
 a[href^="https://"]:hover, a[href^="mailto"]:hover, a[href]:hover{
     text-decoration: underline;
 }
-  
+
+img {
+  max-width: 100%;
+  border-radius:5px;
+}
+
+html:has(.background-confirmation-img.img-zoom) {
+  overflow:hidden;
+}
+
+
+.background-confirmation, .background-confirmation-img{
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 150;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+}
+
+.background-confirmation-img{
+  background: rgba(0, 0, 0, 0.6);
+  opacity:1;
+}
+
+
+.background-confirmation-img.reverse-img{
+  transition-duration: 0.1s;
+  opacity:0;
+  pointer-events: none;
+}
