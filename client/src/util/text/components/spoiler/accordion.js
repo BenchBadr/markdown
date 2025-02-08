@@ -1,5 +1,7 @@
 import { useState } from "react";
-import './accordion.css'
+import './accordion.css';
+import TokenToHtml from "../../render";
+import tokenize from "../../parser";
 
 const Accordion = ({ content, id, title, custom=null }) => {
     const [isChecked, setIsChecked] = useState(false);
@@ -27,7 +29,7 @@ const Accordion = ({ content, id, title, custom=null }) => {
             </div>
           </label>
           <div className="tab__content">
-            {content}
+            <TokenToHtml tokens={tokenize(content)} />
           </div>
         </div>
       </div>
