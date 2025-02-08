@@ -17,7 +17,7 @@ const TokenToHtml = (tokens) => {
       switch(current.type){
         // block - block
         case 'blockMath':
-          temp = <Math formula={(current.content.length !== 0 ? current.content.join('') : '').replaceAll('\n',' ')} block={true} /> ;
+          temp = <Math formula={(current.content.length !== 0 ? current.content : '').replaceAll('\n',' ')} block={true} /> ;
           break;
 
         case 'blockCode':
