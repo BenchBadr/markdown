@@ -2,6 +2,7 @@ import React from "react";
 import Math from "./components/math";
 import './markdown.css';
 import CustomImage from "./components/image/CustomImage";
+import Accordion from "./components/spoiler/accordion";
 
 const TokenToHtml = (tokens) => {
   const queue = Object.keys(tokens);
@@ -24,7 +25,7 @@ const TokenToHtml = (tokens) => {
           break;
 
         case 'details':
-          temp = <div style={{color:'red'}}>{child}</div>
+          temp = <Accordion content={current.content} id={key} title={current.title} />;
           break;
 
         case 'list':

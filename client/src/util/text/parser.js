@@ -114,23 +114,14 @@ function tokenize(markdown) {
             }
 
             if (inBlock !== null){
-                output[output.length - 1].content.push(`${line}\n`);
-            } 
-            if (inBlock === null || blockSyntaxes[inBlock].render) {
+                output[output.length - 1].content+=`${line}\n`;
+            } else {
                 const key = getBlock(line, false);
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
-                const tempContent = tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line);
-                if (inBlock === null) {
-                    output.push({
-                        type: type,
-                        content: tempContent,
-                    })
-                } else {
-                    output[output.length - 1].content.push({
-                      type: type,
-                      content: tempContent,
-                  })
-                }
+                output.push({
+                    type: type,
+                    content: tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
+                })
             }
         }
     });
