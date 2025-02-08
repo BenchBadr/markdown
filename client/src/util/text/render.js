@@ -16,12 +16,17 @@ const TokenToHtml = (tokens) => {
       switch(current.type){
         // block - block
         case 'blockMath':
-          temp = <Math formula={(current.content.length !== 0 ? current.content : '').replaceAll('\n',' ')} block={true} /> ;
+          temp = <Math formula={(current.content.length !== 0 ? current.content.join('') : '').replaceAll('\n',' ')} block={true} /> ;
           break;
 
         case 'blockCode':
           temp = <pre><code>{current.content}</code></pre>;
           break;
+
+        case 'details':
+          temp = <div style={{color:'red'}}>{child}</div>
+          break;
+
         case 'list':
           temp = <li>{child}</li>
           break;
@@ -76,6 +81,9 @@ const TokenToHtml = (tokens) => {
           break;
         case 'italic':
           temp = <i>{child}</i>;
+          break;
+        case 'spoilInline':
+          temp = <span className='spoiler'>{child}</span>;
           break;
         // inline - no heritance
         case 'code':

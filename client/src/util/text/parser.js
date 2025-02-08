@@ -1,5 +1,5 @@
 function tokenize(markdown) {
-    let inBlock = false;
+    let inBlock = null;
     let bulletLevel = null;
     const output = [];
 
@@ -12,7 +12,6 @@ function tokenize(markdown) {
         { type: 'link', regex: /\[(.+?)\]\((.*?)\)/g, render: false },
         { type: 'image', regex: /!\[(.*?)\]\((.+?)\)/g, render: false },
         { type: 'inlineMath', regex: /\$(.+?)\$/g, render: false },
-        // { type: 'spoilInline', regex: /\||(.*?)\||/g, render: false }
     ]
 
 
@@ -29,6 +28,7 @@ function tokenize(markdown) {
   const blockSyntaxes = [
       { type: 'blockCode', regex: /^```/g, render: false, end:'\`\`\`' },
       { type: 'blockMath', regex: /^\$\$/g, render: false, end:'$$' },
+      { type: 'details', regex: /^\|\|/g, render: true, end:'||' },
   ];
 
   
@@ -95,9 +95,9 @@ function tokenize(markdown) {
     lines.forEach(line => {
         if (line){
             const key = getBlock(line)
-            if (key!==null){
-                if (!inBlock){
-                    const adapter = {blockCode:'language', blockMath:'global'};
+            if (key !== null){
+                if (inBlock === null){
+                    const adapter = {blockCode:'language', blockMath:'global', details:'title'};
                     const currentSyntax = blockSyntaxes[key];
                     const extension = line.trim().slice(currentSyntax.end.length);
                     output.push({
@@ -105,23 +105,32 @@ function tokenize(markdown) {
                         content: [],
                         [adapter[currentSyntax.type]]: extension,
                     });
-                    inBlock = currentSyntax.end;
+                    inBlock = key;
                     return;
-                } else if (inBlock === blockSyntaxes[key].end){
-                    inBlock = false;
+                } else if (inBlock === key){
+                    inBlock = null;
                     return;
                 }
             }
 
-            if (inBlock){
-                output[output.length - 1].content+=`${line}\n`;
-            } else {
+            if (inBlock !== null){
+                output[output.length - 1].content.push(`${line}\n`);
+            } 
+            if (inBlock === null || blockSyntaxes[inBlock].render) {
                 const key = getBlock(line, false);
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
-                output.push({
-                    type: type,
-                    content: tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
-                })
+                const tempContent = tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line);
+                if (inBlock === null) {
+                    output.push({
+                        type: type,
+                        content: tempContent,
+                    })
+                } else {
+                    output[output.length - 1].content.push({
+                      type: type,
+                      content: tempContent,
+                  })
+                }
             }
         }
     });
