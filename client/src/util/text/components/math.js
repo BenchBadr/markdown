@@ -11,6 +11,8 @@ const sharedMacros = {
 
     // notations
     "\\lim": "\\underset{#1}{\\text{lim}}",
+    "\\cases": "\\begin{cases} #1 \\end{cases}",
+    "\\ifff": "\\underset{\\begin{matrix}#1\\end{matrix}}{\\iff}",
 };
 
 const Math = ({ formula, block = false }) => {
