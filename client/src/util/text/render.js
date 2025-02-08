@@ -1,7 +1,7 @@
 import React from "react";
 import Math from "./components/math";
 import './markdown.css';
-import CustomImage from "./components/image";
+import CustomImage from "./components/image/CustomImage";
 
 const TokenToHtml = (tokens) => {
   const queue = Object.keys(tokens);
