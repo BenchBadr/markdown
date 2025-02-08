@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import CopyWrapper from './CopyWrapper';
 
 const sharedMacros = {
     // sets
@@ -25,7 +26,12 @@ const Math = ({ formula, block = false }) => {
         }
     }, [formula, block]);
 
-    return <span ref={formulaRef} style={{ display: block ? 'block' : 'inline', textAlign: block ? 'center' : 'left' }}></span>;
+    return (
+        <CopyWrapper textToCopy={formula}>
+            <span ref={formulaRef} style={{ display: block ? 'block' : 'inline', textAlign: block ? 'center' : 'left' }}>
+            </span>
+        </CopyWrapper>
+    );
 };
 
 export default Math;
