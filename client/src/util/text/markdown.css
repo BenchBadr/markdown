@@ -28,74 +28,32 @@ img {
   border-radius:5px;
 }
 
-/* CustomImage.css */
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px; /* Example margin - adjust as needed */
-}
-
-.center-image {
-  max-width: 300px; /* Adjust default image size as needed */
-  max-height: 200px;
+.spoiler {
+  color:#1e1f22;
+  background-color: currentColor;
+  margin: 0 5px;
+  padding:0 2px;
+  user-select:none;
+  border-radius:5px;
   cursor: pointer;
-  display: block; /* Prevents extra space below image */
+  transition-duration: 0.2s;
+  overflow-y: scroll;
 }
 
-.background-confirmation-img {
-  position: fixed; /* or absolute, depending on your layout */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0; /* Initially hidden */
-  pointer-events: none; /* Initially not interactive */
-  transition: opacity 0.3s ease-in-out; /* Smooth fade in/out */
-  z-index: 1000; /* Ensure it's on top of other content */
+.spoiler > *{
+  opacity: 0;
 }
 
-.background-confirmation-img.img-zoom {
-  opacity: 1; /* Visible when zoomed */
-  pointer-events: auto; /* Interactive when zoomed */
+.hidden-checkbox:checked + .spoiler > *{
+  opacity: 1;
 }
 
-.background-confirmation-img.reverse-img {
-  opacity: 0; /* Hidden when not zoomed */
-  pointer-events: none; /* Not interactive when not zoomed */
+.app.dark .hidden-checkbox:checked + .spoiler {
+  background-color: var(--dark-low-op);
+  color:white;
 }
 
-
-.modal-image-container {
-  max-width: 90%; /* Maximum width of zoomed image container */
-  width: auto; /* Adjust to content width */
-  max-height: 90vh; /* Maximum height of zoomed image container */
-  margin: auto; /* Center the modal */
-  overflow: hidden; /* Prevent scrollbars if content is larger */
-  display: flex;
-  flex-direction: column; /* Arrange image and text vertically */
-  align-items: center; /* Center items horizontally */
-  background-color: #222; /* Darker background for modal */
-  padding: 15px;
-  border-radius: 8px;
-}
-
-
-.modal-image {
-  max-width: 100%; /* Image fills container width */
-  max-height: 80vh; /* Limit image height to viewport height */
-  display: block; /* Prevents extra space below image */
-  cursor: pointer;
-}
-
-.modal-text {
-  color: white;
-  margin-top: 15px;
-  text-align: center;
-  font-size: 0.9em;
+.hidden-checkbox:checked + .spoiler {
+  background-color: var(--light-low-op);
+  color:black;
 }

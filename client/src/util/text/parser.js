@@ -28,7 +28,7 @@ function tokenize(markdown) {
   
   const blockSyntaxes = [
       { type: 'blockCode', regex: /^```/g, render: false, end:'\`\`\`' },
-      { type: 'blockMath', regex: /^\\$\\$/g, render: false, end:'$$' },
+      { type: 'blockMath', regex: /^\$\$/g, render: false, end:'$$' },
   ];
 
   
@@ -84,6 +84,7 @@ function tokenize(markdown) {
         for (let i = 0; i < syntaxes.length; i++) {
           const syntax = syntaxes[i];
           if (syntax.regex.test(trimmedLine)) {
+            console.log(syntax.type)
               return i;
           }
         }
@@ -98,7 +99,7 @@ function tokenize(markdown) {
                 if (!inBlock){
                     const adapter = {blockCode:'language', blockMath:'global'};
                     const currentSyntax = blockSyntaxes[key];
-                    const extension = line.trim().slice(currentSyntax.end.length - 1);
+                    const extension = line.trim().slice(currentSyntax.end.length);
                     output.push({
                         type: currentSyntax.type,
                         content: [],

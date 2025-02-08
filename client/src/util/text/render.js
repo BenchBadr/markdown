@@ -30,31 +30,31 @@ const TokenToHtml = (tokens) => {
         // block - inline
         case 'h1':
           temp = <h1>{child}</h1>;
-          console.log(temp)
+          
           break;
         case 'h2':
           temp = <h2>{child}</h2>;
-          console.log(temp)
+          
           break;
 
         case 'h3':
           temp = <h3>{child}</h3>;
-          console.log(temp)
+          
           break;
   
         case 'h4':
           temp = <h4>{child}</h4>;
-          console.log(temp)
+          
           break;
     
         case 'h5':
           temp = <h5>{child}</h5>;
-          console.log(temp)
+          
           break;
 
         case 'h6':
           temp = <h6>{child}</h6>;
-          console.log(temp)
+          
           break;
       
     
