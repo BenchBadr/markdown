@@ -10,7 +10,16 @@ const Accordion = ({ content, id, title, custom=null }) => {
     const handleCheckboxChange = () => {
       setIsChecked(!isChecked);
     };
-  
+    
+    const special = ['tips','info','warn','check'];
+    console.log(special.includes(title.toLowerCase()))
+    if (special.includes(title.toLowerCase())) {
+      return (
+        <div className={title.toLowerCase()}>
+          {content.length ? <TokenToHtml tokens={tokenize(content)} /> : ''}
+        </div>
+      )
+    }
     return (
       <div className="accordion" style={{border:!custom ? 'current' : 'none'}}>
         <div className="tab">
@@ -25,11 +34,11 @@ const Accordion = ({ content, id, title, custom=null }) => {
             {title}
             <div>
               {isChecked}
-              <a className='material-icons-round'>expand_more</a>
+              <a className='material-icons'>expand_more</a>
             </div>
           </label>
           <div className="tab__content">
-            <TokenToHtml tokens={tokenize(content)} />
+            {content.length ? <TokenToHtml tokens={tokenize(content)} /> : ''}
           </div>
         </div>
       </div>

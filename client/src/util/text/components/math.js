@@ -8,6 +8,7 @@ const sharedMacros = {
     "\\C": "\\mathbb{C}",
     "\\Q": "\\mathbb{Q}",
     "\\D": "\\mathbb{D}",
+    "\\K": "\\mathbb{K}",
 
     // notations
     "\\lim": "\\underset{#1}{\\text{lim}}",
