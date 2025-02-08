@@ -81,11 +81,12 @@ function tokenize(markdown) {
     function getBlock(line, checkBlock = true) {
         const trimmedLine = line.trim();
         const syntaxes = checkBlock ? blockSyntaxes : lineSyntax;
-        syntaxes.forEach((syntax, key) => {
-            if ((syntax.regex).test(trimmedLine)) {
-                return key;
-            }
-        })
+        for (let i = 0; i < syntaxes.length; i++) {
+          const syntax = syntaxes[i];
+          if (syntax.regex.test(trimmedLine)) {
+              return i;
+          }
+        }
         return null;
     }
 
@@ -93,20 +94,19 @@ function tokenize(markdown) {
     lines.forEach(line => {
         if (line){
             const key = getBlock(line)
-            console.log(key)
-            if (key){
-                console.log(key)
+            if (key!==null){
                 if (!inBlock){
                     const adapter = {blockCode:'language', blockMath:'global'};
-                    const extension = line.trim().slice(blockSyntaxes[key].source.replace(/\\/g, '').length - 1);
+                    const currentSyntax = blockSyntaxes[key];
+                    const extension = line.trim().slice(currentSyntax.end.length - 1);
                     output.push({
-                        type: key,
+                        type: currentSyntax.type,
                         content: [],
-                        [adapter[blockSyntaxes[key].type]]: extension,
+                        [adapter[currentSyntax.type]]: extension,
                     });
-                    inBlock = key;
+                    inBlock = currentSyntax.end;
                     return;
-                } else if (inBlock === key){
+                } else if (inBlock === blockSyntaxes[key].end){
                     inBlock = false;
                     return;
                 }
@@ -115,10 +115,11 @@ function tokenize(markdown) {
             if (inBlock){
                 output[output.length - 1].content+=`${line}\n`;
             } else {
-                const key = getBlock(line, false) || 'paragraph';
+                const key = getBlock(line, false);
+                const type = key!==null ? lineSyntax[key].type : 'paragraph';
                 output.push({
-                    type: key,
-                    content: tokenInline(key!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
+                    type: type,
+                    content: tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
                 })
             }
         }
