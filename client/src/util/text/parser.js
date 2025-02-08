@@ -4,14 +4,15 @@ function tokenize(markdown) {
     const output = [];
 
     const inlineSyntaxes = [
-        { type: 'bold', regex: /\*\*(.*?)\*\*/g, render: true },
-        { type: 'italic', regex: /\*(.*?)\*/g, render: true },
-        { type: 'strikethrough', regex: /~~(.*?)~~/g, render: true },
-        { type: 'underline', regex: /__(.*?)__/g, render: true },
-        { type: 'code', regex: /`(.*?)`/g, render: false },
-        { type: 'link', regex: /\[(.*?)\]\((.*?)\)/g, render: false },
-        { type: 'image', regex: /!\[(.*?)\]\((.*?)\)/g, render: false },
-        { type: 'inlineMath', regex: /\$(.*?)\$/g, render: false }
+        { type: 'bold', regex: /\*\*(.+?)\*\*/g, render: true },
+        { type: 'italic', regex: /\*(.+?)\*/g, render: true },
+        { type: 'strikethrough', regex: /~~(.+?)~~/g, render: true },
+        { type: 'underline', regex: /__(.+?)__/g, render: true },
+        { type: 'code', regex: /`(.+?)`/g, render: false },
+        { type: 'link', regex: /\[(.+?)\]\((.*?)\)/g, render: false },
+        { type: 'image', regex: /!\[(.*?)\]\((.+?)\)/g, render: false },
+        { type: 'inlineMath', regex: /\$(.+?)\$/g, render: false },
+        // { type: 'spoilInline', regex: /\||(.*?)\||/g, render: false }
     ]
 
 
@@ -81,7 +82,7 @@ function tokenize(markdown) {
         const trimmedLine = line.trim();
         const syntaxes = checkBlock ? blockSyntaxes : lineSyntax;
         syntaxes.forEach((syntax, key) => {
-            if (syntax.regex.test(trimmedLine)) {
+            if ((syntax.regex).test(trimmedLine)) {
                 return key;
             }
         })
@@ -92,15 +93,16 @@ function tokenize(markdown) {
     lines.forEach(line => {
         if (line){
             const key = getBlock(line)
+            console.log(key)
             if (key){
                 console.log(key)
                 if (!inBlock){
                     const adapter = {blockCode:'language', blockMath:'global'};
-                    const extension = line.trim().slice(blockSyntaxes[key].end.length - 1);
+                    const extension = line.trim().slice(blockSyntaxes[key].source.replace(/\\/g, '').length - 1);
                     output.push({
                         type: key,
                         content: [],
-                        [adapter[key]]: extension,
+                        [adapter[blockSyntaxes[key].type]]: extension,
                     });
                     inBlock = key;
                     return;
