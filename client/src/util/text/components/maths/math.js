@@ -12,7 +12,20 @@ const Math = ({ formula, block = false }) => {
         throw new Error("Math component must be used within a MathProvider");
     }
     
-    const { macros } = context;
+    const { macros, addMacros } = context;
+
+    useEffect(() => {
+        if (formulaRef.current && formula) { 
+            const newcommandRegex = /\\newcommand\*?\{(.*?)\}\{(.*?)\}/g; 
+            let match = newcommandRegex.exec(formula)
+
+            if (match){
+                const alias = match[1];
+                const command = match[2];
+                addMacros(alias, command)
+            }
+        }
+    }, [formula]); 
 
     useEffect(() => {
         if (formulaRef.current) {

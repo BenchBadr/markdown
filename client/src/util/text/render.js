@@ -113,7 +113,7 @@ const TokenToHtmlChild = (tokens) => {
 
       elements.push(temp);
   }
-  // console.log('elements',elements)
+
   return <>{elements && elements.map((element, index) => <React.Fragment key={index}>{element}</React.Fragment>)}</>;
 
 }
