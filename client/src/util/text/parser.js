@@ -83,9 +83,10 @@ function tokenize(markdown) {
         const syntaxes = checkBlock ? blockSyntaxes : lineSyntax;
         for (let i = 0; i < syntaxes.length; i++) {
           const syntax = syntaxes[i];
+          syntax.regex.lastIndex = 0;
           if (syntax.regex.test(trimmedLine)) {
-            console.log(syntax.type)
-              return i;
+            console.log(syntax.type, i)
+            return i;
           }
         }
         return null;
@@ -95,6 +96,7 @@ function tokenize(markdown) {
     lines.forEach(line => {
         if (line){
             const key = getBlock(line)
+
             if (key !== null){
                 if (inBlock === null){
                     const adapter = {blockCode:'language', blockMath:'global', details:'title'};

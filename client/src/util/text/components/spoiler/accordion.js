@@ -12,7 +12,6 @@ const Accordion = ({ content, id, title, custom=null }) => {
     };
     
     const special = ['tips','info','warn','check'];
-    console.log(special.includes(title.toLowerCase()))
     if (special.includes(title.toLowerCase())) {
       return (
         <div className={title.toLowerCase()}>
