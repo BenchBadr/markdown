@@ -1,10 +1,11 @@
-import React from "react";
-import Math from "./components/math";
+import React, {useState} from "react";
+import Math from "./components/maths/math";
+import MathContext, {MathProvider} from "./components/maths/MathContext";
 import './markdown.css';
 import CustomImage from "./components/image/CustomImage";
 import Accordion from "./components/spoiler/accordion";
 
-const TokenToHtml = (tokens) => {
+const TokenToHtmlChild = (tokens) => {
   const queue = Object.keys(tokens);
   let elements = [];
   let temp;
@@ -115,6 +116,15 @@ const TokenToHtml = (tokens) => {
   // console.log('elements',elements)
   return <>{elements && elements.map((element, index) => <React.Fragment key={index}>{element}</React.Fragment>)}</>;
 
+}
+
+const TokenToHtml = ({tokens}) => {
+
+  return (
+    <MathProvider>
+      <TokenToHtmlChild tokens={tokens} />
+    </MathProvider>
+  )
 }
 
 export default TokenToHtml;

@@ -22,7 +22,7 @@ function tokenize(markdown) {
       { type: 'h4', regex: /^####\s(.*)/, render: true },
       { type: 'h5', regex: /^#####\s(.*)/, render: true },
       { type: 'h6', regex: /^######\s(.*)/, render: true },
-      { type: 'blockquote', regex: /^>(.*)/, render: true }
+      { type: 'blockquote', regex: /^>(.*)/, render: true, wrap: true },
   ];
   
   const blockSyntaxes = [
@@ -85,7 +85,6 @@ function tokenize(markdown) {
           const syntax = syntaxes[i];
           syntax.regex.lastIndex = 0;
           if (syntax.regex.test(trimmedLine)) {
-            console.log(syntax.type, i)
             return i;
           }
         }
@@ -120,10 +119,15 @@ function tokenize(markdown) {
             } else {
                 const key = getBlock(line, false);
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
-                output.push({
-                    type: type,
-                    content: tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
-                })
+                // exclude both null and 0 (as compared with previous)
+                if (key && lineSyntax[key].wrap && output[output.length - 1] && output[output.length - 1].type === type){
+                  output[output.length - 1].content[0].content+='\n'+line.split(' ').slice(1).join(' ');
+                } else {
+                  output.push({
+                      type: type,
+                      content: tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
+                  })
+                }
             }
         }
     });

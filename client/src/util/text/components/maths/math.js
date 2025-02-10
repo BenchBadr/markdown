@@ -1,33 +1,28 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
-import CopyWrapper from './CopyWrapper';
-
-const sharedMacros = {
-    // sets
-    "\\C": "\\mathbb{C}",
-    "\\Q": "\\mathbb{Q}",
-    "\\D": "\\mathbb{D}",
-    "\\K": "\\mathbb{K}",
-
-    // notations
-    "\\lim": "\\underset{#1}{\\text{lim}}",
-    "\\cases": "\\begin{cases} #1 \\end{cases}",
-    "\\ifff": "\\underset{\\begin{matrix}#1\\end{matrix}}{\\iff}",
-};
+import CopyWrapper from '../CopyWrapper';
+import MathContext from './MathContext'; 
 
 const Math = ({ formula, block = false }) => {
     const formulaRef = useRef(null);
+    const context = useContext(MathContext);
+
+    if (!context) {
+        throw new Error("Math component must be used within a MathProvider");
+    }
+    
+    const { macros } = context;
 
     useEffect(() => {
         if (formulaRef.current) {
             katex.render(formula, formulaRef.current, {
                 throwOnError: false,
                 displayMode: block,
-                macros: sharedMacros
+                macros: macros 
             });
         }
-    }, [formula, block]);
+    }, [formula, block, macros]);
 
     return (
         <CopyWrapper textToCopy={formula}>
