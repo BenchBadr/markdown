@@ -19,9 +19,6 @@ const MathContext = createContext();
 export const MathProvider = ({ children }) => {
   const [macros, setMacros] = useState(initialMacros);
 
-  useEffect(() => {
-    console.log("macros", macros);
-  }, [macros]);
   return (
     <MathContext.Provider value={{ macros, setMacros }}>
       {children}

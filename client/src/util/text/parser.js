@@ -22,7 +22,7 @@ function tokenize(markdown) {
       { type: 'h4', regex: /^####\s(.*)/, render: true, level:4 },
       { type: 'h5', regex: /^#####\s(.*)/, render: true, level:5 },
       { type: 'h6', regex: /^######\s(.*)/, render: true, level:6 },
-      { type: 'blockquote', regex: /^>(.*)/, render: true, wrap: true },
+      { type: 'blockquote', regex: /^>\s?(.*)/, render: true, wrap: true},
   ];
   
   const blockSyntaxes = [
@@ -118,12 +118,19 @@ function tokenize(markdown) {
                 output[output.length - 1].content+=`${line}\n`;
             } else {
                 const key = getBlock(line, false);
+                console.log(lineSyntax[key], line ? 'line' : 'empty');
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
                 // exclude both null and 0 (as compared with previous)
                 if (key && lineSyntax[key].wrap) {
                   if (output[output.length - 1] && output[output.length - 1].type === type) {
-                    output[output.length - 1].content += '\n'+line.split(' ').slice(1).join(' ');
+                    console.log(line.length)
+                    if (line.length > 1) {
+                      output[output.length - 1].content += ' '+line.split(' ').slice(1).join(' ');
+                    } else {
+                      output[output.length - 1].content += '\n';
+                    }
                   } else {
+
                     output.push({
                       type: type,
                       content: line.split(' ').slice(1).join(' '),

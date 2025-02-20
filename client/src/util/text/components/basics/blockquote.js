@@ -4,7 +4,7 @@ import TokenToHtml from '../../render';
 
 
 const Blockquote = ({ content }) => {
-    console.log(content)
+
     return (
         <blockquote>
            <TokenToHtml tokens={tokenize(content)} />

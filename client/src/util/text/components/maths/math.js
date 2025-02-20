@@ -38,22 +38,6 @@ const Math = ({ formula, block = false }) => {
         <CopyWrapper textToCopy={formula}>
             <span ref={formulaRef} style={{ display: block ? 'block' : 'inline', textAlign: block ? 'center' : 'left' }}>
             </span>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Alias</th>
-                        <th>Command</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.entries(macros).map(([alias, command]) => (
-                        <tr key={alias}>
-                            <td>{alias}</td>
-                            <td>{command}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
         </CopyWrapper>
     );
 };
