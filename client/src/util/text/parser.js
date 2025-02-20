@@ -93,7 +93,7 @@ function tokenize(markdown) {
 
     const lines = markdown.split('\n');
     lines.forEach(line => {
-        if (line){
+        if (true){
             const key = getBlock(line)
 
             if (key !== null){
@@ -118,17 +118,17 @@ function tokenize(markdown) {
                 output[output.length - 1].content+=`${line}\n`;
             } else {
                 const key = getBlock(line, false);
-                console.log(lineSyntax[key], line ? 'line' : 'empty');
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
                 // exclude both null and 0 (as compared with previous)
-                if (key && lineSyntax[key].wrap) {
+                if (type==='paragraph' && output[output.length - 1] && output[output.length - 1].type === 'paragraph') {
+                  if (line.replaceAll(' ', '') !== '') {
+                    output[output.length - 1].content.push(...tokenInline(' '+line));
+                  } else {
+                    output.push({type:'paragraph', content:[]});
+                  }
+                } else if (key && lineSyntax[key].wrap) {
                   if (output[output.length - 1] && output[output.length - 1].type === type) {
-                    console.log(line.length)
-                    if (line.length > 1) {
-                      output[output.length - 1].content += ' '+line.split(' ').slice(1).join(' ');
-                    } else {
-                      output[output.length - 1].content += '\n';
-                    }
+                    output[output.length - 1].content += ' '+line.split(' ').slice(1).join(' ')+'\n';
                   } else {
 
                     output.push({
