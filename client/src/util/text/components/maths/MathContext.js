@@ -1,16 +1,17 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const initialMacros = {
-  "\\C": "\\mathbb{C}",
-  "\\Q": "\\mathbb{Q}",
-  "\\D": "\\mathbb{D}",
-  "\\K": "\\mathbb{K}",
+  // "\\C": "\\mathbb{C}",
+  // "\\Q": "\\mathbb{Q}",
+  // "\\D": "\\mathbb{D}",
+  // "\\K": "\\mathbb{K}",
 
-  "\\lim": "\\underset{#1}{\\text{lim}}",
-  "\\cases": "\\begin{cases} #1 \\end{cases}",
-  "\\ifff": "\\underset{\\begin{matrix}#1\\end{matrix}}{\\iff}",
+  // "\\lim": "\\underset{#1}{\\text{lim}}",
+  // "\\cases": "\\begin{cases} #1 \\end{cases}",
+  // "\\ifff": "\\underset{\\begin{matrix}#1\\end{matrix}}{\\iff}",
+  // "\\matrix": "\\begin{bmatrix}#1\\end{bmatrix}",
 
-  '\\p':'#1, #2, #3'
+  // "\\ncr":"\\begin{pmatrix}#1 \\\\ #2\\end{pmatrix}"
 };
 
 const MathContext = createContext();
@@ -18,14 +19,11 @@ const MathContext = createContext();
 export const MathProvider = ({ children }) => {
   const [macros, setMacros] = useState(initialMacros);
 
-  const addMacros = (alias, command) => {
-    const tempMacros = {...macros};
-    tempMacros[alias] = command;
-    setMacros(tempMacros);
-  };
-
+  useEffect(() => {
+    console.log("macros", macros);
+  }, [macros]);
   return (
-    <MathContext.Provider value={{ macros, addMacros }}>
+    <MathContext.Provider value={{ macros, setMacros }}>
       {children}
     </MathContext.Provider>
   );

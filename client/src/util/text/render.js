@@ -4,6 +4,7 @@ import MathContext, {MathProvider} from "./components/maths/MathContext";
 import './markdown.css';
 import CustomImage from "./components/image/CustomImage";
 import Accordion from "./components/spoiler/accordion";
+import Blockquote from "./components/basics/blockquote";
 
 const TokenToHtmlChild = (tokens) => {
   const queue = Object.keys(tokens);
@@ -66,7 +67,7 @@ const TokenToHtmlChild = (tokens) => {
       
     
         case 'blockquote':
-          temp = <blockquote>{child}</blockquote>;
+          temp = <Blockquote content={current.content}/>;
           break;
 
         // inline - wrapper

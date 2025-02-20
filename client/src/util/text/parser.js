@@ -16,12 +16,12 @@ function tokenize(markdown) {
 
 
     const lineSyntax = [
-      { type: 'h1', regex: /^#\s(.*)/, render: true },
-      { type: 'h2', regex: /^##\s(.*)/, render: true },
-      { type: 'h3', regex: /^###\s(.*)/, render: true },
-      { type: 'h4', regex: /^####\s(.*)/, render: true },
-      { type: 'h5', regex: /^#####\s(.*)/, render: true },
-      { type: 'h6', regex: /^######\s(.*)/, render: true },
+      { type: 'h1', regex: /^#\s(.*)/, render: true, level:1 },
+      { type: 'h2', regex: /^##\s(.*)/, render: true, level:2 },
+      { type: 'h3', regex: /^###\s(.*)/, render: true, level:3 },
+      { type: 'h4', regex: /^####\s(.*)/, render: true, level:4 },
+      { type: 'h5', regex: /^#####\s(.*)/, render: true, level:5 },
+      { type: 'h6', regex: /^######\s(.*)/, render: true, level:6 },
       { type: 'blockquote', regex: /^>(.*)/, render: true, wrap: true },
   ];
   
@@ -120,8 +120,15 @@ function tokenize(markdown) {
                 const key = getBlock(line, false);
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
                 // exclude both null and 0 (as compared with previous)
-                if (key && lineSyntax[key].wrap && output[output.length - 1] && output[output.length - 1].type === type){
-                  output[output.length - 1].content[0].content+='\n'+line.split(' ').slice(1).join(' ');
+                if (key && lineSyntax[key].wrap) {
+                  if (output[output.length - 1] && output[output.length - 1].type === type) {
+                    output[output.length - 1].content += '\n'+line.split(' ').slice(1).join(' ');
+                  } else {
+                    output.push({
+                      type: type,
+                      content: line.split(' ').slice(1).join(' '),
+                    });
+                  }
                 } else {
                   output.push({
                       type: type,

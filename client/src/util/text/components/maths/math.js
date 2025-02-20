@@ -1,46 +1,59 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import CopyWrapper from '../CopyWrapper';
-import MathContext from './MathContext'; 
+import MathContext from './MathContext';
 
 const Math = ({ formula, block = false }) => {
     const formulaRef = useRef(null);
-    const context = useContext(MathContext);
-
-    if (!context) {
-        throw new Error("Math component must be used within a MathProvider");
-    }
-    
-    const { macros, addMacros } = context;
+    const {macros, setMacros} = useContext(MathContext);
 
     useEffect(() => {
-        if (formulaRef.current && formula) { 
-            const newcommandRegex = /\\newcommand\*?\{(.*?)\}\{(.*?)\}/g; 
-            let match = newcommandRegex.exec(formula)
-
-            if (match){
-                const alias = match[1];
+        if (formulaRef.current) {
+            const newcommandRegex = /\\newcommand\*?\{(.*?)\}\{(.*?)\}/g;
+            const matches = Array.from(formula.matchAll(newcommandRegex));
+            const tempMatches = {...macros}
+            for (const match of matches){
+                const alias = '\\'+match[1];
                 const command = match[2];
-                addMacros(alias, command)
+                tempMatches[alias] = command;
             }
+            setMacros(tempMatches)
         }
-    }, [formula]); 
+    }, [formula]);
+
 
     useEffect(() => {
         if (formulaRef.current) {
             katex.render(formula, formulaRef.current, {
                 throwOnError: false,
                 displayMode: block,
-                macros: macros 
+                macros: macros
             });
         }
-    }, [formula, block, macros]);
+    }, [formula, macros]);
+
 
     return (
         <CopyWrapper textToCopy={formula}>
             <span ref={formulaRef} style={{ display: block ? 'block' : 'inline', textAlign: block ? 'center' : 'left' }}>
             </span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Alias</th>
+                        <th>Command</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {Object.entries(macros).map(([alias, command]) => (
+                        <tr key={alias}>
+                            <td>{alias}</td>
+                            <td>{command}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </CopyWrapper>
     );
 };
