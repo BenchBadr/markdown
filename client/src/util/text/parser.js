@@ -16,12 +16,12 @@ function tokenize(markdown) {
 
 
     const lineSyntax = [
-      { type: 'h1', regex: /^#\s(.*)/, render: true, level:1 },
-      { type: 'h2', regex: /^##\s(.*)/, render: true, level:2 },
-      { type: 'h3', regex: /^###\s(.*)/, render: true, level:3 },
-      { type: 'h4', regex: /^####\s(.*)/, render: true, level:4 },
-      { type: 'h5', regex: /^#####\s(.*)/, render: true, level:5 },
-      { type: 'h6', regex: /^######\s(.*)/, render: true, level:6 },
+      { type: 'title', regex: /^#\s(.*)/, render: true, level:1 },
+      { type: 'title', regex: /^##\s(.*)/, render: true, level:2 },
+      { type: 'title', regex: /^###\s(.*)/, render: true, level:3 },
+      { type: 'title', regex: /^####\s(.*)/, render: true, level:4 },
+      { type: 'title', regex: /^#####\s(.*)/, render: true, level:5 },
+      { type: 'title', regex: /^######\s(.*)/, render: true, level:6 },
       { type: 'blockquote', regex: /^>\s?(.*)/, render: true, wrap: true},
   ];
   
@@ -36,6 +36,7 @@ function tokenize(markdown) {
         if (!content) return [];
         const output = [];
         let lastIdx = 0;
+
       
         while (lastIdx < content.length) {
           let earliestMatch = null;
@@ -78,6 +79,31 @@ function tokenize(markdown) {
         return output;
       }
 
+      let levelCoords = [];
+
+      function nestedAccess(indices) {
+        let current = output;
+        for (const index of indices) {
+            if (Array.isArray(current) && Number.isInteger(index) && index >= 1 && index <= current.length) {
+                current = current[index - 1];
+                console.log(current, 'currentAccess');
+            } else {
+                return undefined; 
+            }
+        }
+        return current;
+    }
+
+      function adjustListLength(list, level) {
+        const slicedList = list.slice(0, level);
+        const paddingLength = level - slicedList.length;
+        if (paddingLength > 0) {
+          slicedList.push(...Array(paddingLength).fill(0));
+        }
+        return slicedList;
+      }
+      
+
     function getBlock(line, checkBlock = true) {
         const trimmedLine = line.trim();
         const syntaxes = checkBlock ? blockSyntaxes : lineSyntax;
@@ -92,6 +118,7 @@ function tokenize(markdown) {
     }
 
     const lines = markdown.split('\n');
+
     lines.forEach(line => {
         if (true){
             const key = getBlock(line)
@@ -137,10 +164,27 @@ function tokenize(markdown) {
                     });
                   }
                 } else {
-                  output.push({
+
+                  let currentNode = output;
+                  if (levelCoords.length) {
+                    currentNode = nestedAccess(levelCoords);
+                    currentNode = currentNode.child;
+                  }
+                  console.log(currentNode, levelCoords,'test')
+                  currentNode.push({
                       type: type,
-                      content: tokenInline(type!='paragraph' ? line.split(' ').slice(1).join(' ') : line),
+                      content: tokenInline(type!=='paragraph' ? line.split(' ').slice(1).join(' ') : line),
+                      level: lineSyntax[key] ? lineSyntax[key].level : 0,
+                      child: []
                   })
+
+                  // adjust level coords accordingly with last elem
+                  const level = lineSyntax[key] && lineSyntax[key].level;
+                  if (level) {
+                      levelCoords = adjustListLength(levelCoords, level);
+                      levelCoords[levelCoords.length-1]++;
+                  }
+
                 }
             }
         }

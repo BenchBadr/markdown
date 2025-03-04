@@ -5,6 +5,7 @@ import './markdown.css';
 import CustomImage from "./components/image/CustomImage";
 import Accordion from "./components/spoiler/accordion";
 import Blockquote from "./components/basics/blockquote";
+import Title from "./components/basics/title";
 
 const TokenToHtmlChild = (tokens) => {
   const queue = Object.keys(tokens);
@@ -36,35 +37,10 @@ const TokenToHtmlChild = (tokens) => {
 
 
         // block - inline
-        case 'h1':
-          temp = <h1>{child}</h1>;
+        case 'title':
+          temp = <Title level={current.level} content={current.content} child={current.child}></Title>;
           
           break;
-        case 'h2':
-          temp = <h2>{child}</h2>;
-          
-          break;
-
-        case 'h3':
-          temp = <h3>{child}</h3>;
-          
-          break;
-  
-        case 'h4':
-          temp = <h4>{child}</h4>;
-          
-          break;
-    
-        case 'h5':
-          temp = <h5>{child}</h5>;
-          
-          break;
-
-        case 'h6':
-          temp = <h6>{child}</h6>;
-          
-          break;
-      
     
         case 'blockquote':
           temp = <Blockquote content={current.content}/>;

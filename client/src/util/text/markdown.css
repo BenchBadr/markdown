@@ -94,3 +94,43 @@ img {
   background-color: var(--green-op);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(0, 203, 169)' height='1.5em' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8z'/%3E%3C/svg%3E");
 }
+
+.arrowBefore{
+  position:relative;
+}
+
+.arrowBefore:hover{
+  .arrow{
+    display: block;
+  }
+}
+
+.arrowBefore .arrow{
+  cursor:pointer;
+  opacity:.5;
+  user-select: none;
+  display: none;
+
+  position:absolute;
+  left:calc(-1em * .5 * 1.2);
+  top:50%;
+  transform: translateY(-50%);
+
+
+  &:hover{
+    opacity: .7;
+  }
+
+  .material-icons{
+    rotate:-90deg;
+    font-size:70%;
+    transition-duration:.1s;
+
+    &.active{
+      rotate:0deg;
+    }
+  }
+
+}
+
+
