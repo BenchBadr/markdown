@@ -102,6 +102,10 @@ img {
 .arrowBefore:hover{
   .arrow{
     display: block;
+
+    &:has(.active){
+      display: block;
+    }
   }
 }
 
@@ -112,7 +116,7 @@ img {
   display: none;
 
   position:absolute;
-  left:calc(-1em * .5 * 1.2);
+  left:calc(-1em * .7);
   top:50%;
   transform: translateY(-50%);
 

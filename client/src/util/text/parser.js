@@ -84,11 +84,9 @@ function tokenize(markdown) {
       function nestedAccess(indices) {
         let current = output;
         for (const index of indices) {
-            if (Array.isArray(current) && Number.isInteger(index) && index >= 1 && index <= current.length) {
-                current = current[index - 1];
+            if (index >= 1 && index <= current.length) {
+                current = current[index - 1].child;
                 console.log(current, 'currentAccess');
-            } else {
-                return undefined; 
             }
         }
         return current;
@@ -166,20 +164,21 @@ function tokenize(markdown) {
                 } else {
 
                   let currentNode = output;
-                  if (levelCoords.length) {
-                    currentNode = nestedAccess(levelCoords);
-                    currentNode = currentNode.child;
+                  const level = lineSyntax[key] && lineSyntax[key].level;
+
+                  if (levelCoords.length > 0) {
+                    currentNode = nestedAccess(levelCoords.slice(0, level !== 0 ? level : levelCoords.length));
+                    console.log(currentNode, levelCoords,'test')
+                    currentNode = currentNode;
                   }
-                  console.log(currentNode, levelCoords,'test')
                   currentNode.push({
                       type: type,
-                      content: tokenInline(type!=='paragraph' ? line.split(' ').slice(1).join(' ') : line),
+                      content: tokenInline(type!=='paragraph' ? line.split(' ').slice(1).join(' ')+levelCoords : line),
                       level: lineSyntax[key] ? lineSyntax[key].level : 0,
                       child: []
                   })
 
                   // adjust level coords accordingly with last elem
-                  const level = lineSyntax[key] && lineSyntax[key].level;
                   if (level) {
                       levelCoords = adjustListLength(levelCoords, level);
                       levelCoords[levelCoords.length-1]++;
