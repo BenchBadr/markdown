@@ -126,7 +126,11 @@ function tokenize(markdown) {
                     const adapter = {blockCode:'language', blockMath:'global', details:'title'};
                     const currentSyntax = blockSyntaxes[key];
                     const extension = line.trim().slice(currentSyntax.end.length);
-                    output.push({
+                    let currentNode = output;
+                    if (levelCoords.length > 0) {
+                      currentNode = nestedAccess(levelCoords);
+                    }
+                    currentNode.push({
                         type: currentSyntax.type,
                         content: [],
                         [adapter[currentSyntax.type]]: extension,
@@ -145,18 +149,21 @@ function tokenize(markdown) {
                 const key = getBlock(line, false);
                 const type = key!==null ? lineSyntax[key].type : 'paragraph';
                 // exclude both null and 0 (as compared with previous)
-                if (type==='paragraph' && output[output.length - 1] && output[output.length - 1].type === 'paragraph') {
+                let currentNode = output;
+                    if (levelCoords.length > 0) {
+                      currentNode = nestedAccess(levelCoords);
+                }
+                if (type==='paragraph' && currentNode[currentNode.length - 1] && currentNode[currentNode.length - 1].type === 'paragraph') {
                   if (line.replaceAll(' ', '') !== '') {
-                    output[output.length - 1].content.push(...tokenInline(' '+line));
+                    currentNode[currentNode.length - 1].content.push(...tokenInline(' '+line));
                   } else {
-                    output.push({type:'paragraph', content:[]});
+                    currentNode.push({type:'paragraph', content:[]});
                   }
                 } else if (key && lineSyntax[key].wrap) {
-                  if (output[output.length - 1] && output[output.length - 1].type === type) {
-                    output[output.length - 1].content += ' '+line.split(' ').slice(1).join(' ')+'\n';
+                  if (currentNode[currentNode.length - 1] && currentNode[currentNode.length - 1].type === type) {
+                    currentNode[currentNode.length - 1].content += ' '+line.split(' ').slice(1).join(' ')+'\n';
                   } else {
-
-                    output.push({
+                    currentNode.push({
                       type: type,
                       content: line.split(' ').slice(1).join(' '),
                     });

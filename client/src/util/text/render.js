@@ -91,7 +91,7 @@ const TokenToHtmlChild = (tokens) => {
       elements.push(temp);
   }
 
-  return <>{elements && elements.map((element, index) => <React.Fragment key={index}>{element}</React.Fragment>)}</>;
+  return <div className="md-merj">{elements && elements.map((element, index) => <React.Fragment key={index}>{element}</React.Fragment>)}</div>;
 
 }
 

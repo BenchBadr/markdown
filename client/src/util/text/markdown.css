@@ -125,6 +125,11 @@ img {
     opacity: .7;
   }
 
+  &:not(:has(.active)){
+    color:var(--main);
+    display: block;
+  }
+
   .material-icons{
     rotate:-90deg;
     font-size:70%;
@@ -136,5 +141,4 @@ img {
   }
 
 }
-
 
